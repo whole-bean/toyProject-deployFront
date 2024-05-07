@@ -7,9 +7,15 @@ import Link from '@mui/material/Link';
 
 function Copyright() {
   return (
-    <Typography variant="body2" color="text.secondary" align="center">
+    <Typography variant='body2' color='text.secondary' align='center'>
       {'Copyright © '}
-      <Link color="inherit" underline='none' href="https://github.com/whole-bean" target="_blank" rel="noopener" >
+      <Link
+        color='inherit'
+        underline='none'
+        href='https://github.com/whole-bean'
+        target='_blank'
+        rel='noopener'
+      >
         최예준
       </Link>{' '}
       {new Date().getFullYear()}
@@ -18,11 +24,11 @@ function Copyright() {
   );
 }
 
-function Footer(props) {
+function Footer() {
 
   return (
-    <Box component="footer" sx={{ bgcolor: 'background.paper', pb: 6, pt: 15}}>
-      <Container maxWidth="lg">
+    <Box component='footer' sx={{ bgcolor: 'background.paper', pt: 7, height: 120}}>
+      <Container maxWidth='lg'>
         <Copyright />
       </Container>
     </Box>
@@ -30,8 +36,6 @@ function Footer(props) {
 }
 
 Footer.propTypes = {
-  description: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
 };
 
 export default Footer;

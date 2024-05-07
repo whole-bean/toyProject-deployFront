@@ -6,9 +6,15 @@ import Link from '@mui/material/Link';
 
 function Copyright() {
   return (
-    <Typography variant="body2" color="text.secondary" align="center">
+    <Typography variant='body2' color='text.secondary' align='center'>
       {'Copyright © '}
-      <Link color="inherit" underline='none' href="https://github.com/whole-bean" target="_blank" rel="noopener" >
+      <Link
+        color='inherit'
+        underline='none'
+        href='https://github.com/whole-bean'
+        target='_blank'
+        rel='noopener'
+      >
         최예준
       </Link>{' '}
       {new Date().getFullYear()}
@@ -23,8 +29,8 @@ interface FooterProps {
 export default function Footer(props: FooterProps) {
 
   return (
-    <Box component="footer" sx={{ bgcolor: 'background.paper', py: 6 }}>
-      <Container maxWidth="lg">
+    <Box component='footer' sx={{ bgcolor: 'background.paper', pt: 7, height: 120}}>
+      <Container maxWidth='lg'>
         <Copyright />
       </Container>
     </Box>

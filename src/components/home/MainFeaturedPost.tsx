@@ -6,11 +6,11 @@ import Box from '@mui/material/Box';
 
 interface MainFeaturedPostProps {
   post: {
-    description: string;
+    title: JSX.Element;
+    description: JSX.Element;
     image: string;
     imageText: string;
     linkText: string;
-    title: string;
   };
 }
 
@@ -28,9 +28,9 @@ export default function MainFeaturedPost(props: MainFeaturedPostProps) {
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
         backgroundImage: `url(${post.image})`,
+        height: '350px'
       }}
     >
-      {/* Increase the priority of the hero background image */}
       {<img style={{ display: 'none' }} src={post.image} alt={post.imageText} />}
       <Box
         sx={{
@@ -42,7 +42,7 @@ export default function MainFeaturedPost(props: MainFeaturedPostProps) {
           backgroundColor: 'rgba(0,0,0,.3)',
         }}
       />
-      <Grid container>
+      <Grid container justifyContent={'start'}>
         <Grid item md={6}>
           <Box
             sx={{
@@ -51,15 +51,12 @@ export default function MainFeaturedPost(props: MainFeaturedPostProps) {
               pr: { md: 0 },
             }}
           >
-            <Typography component="h1" variant="h3" color="inherit" gutterBottom>
+            <Typography component='h1' variant='h3' color='inherit' gutterBottom>
               {post.title}
             </Typography>
-            <Typography variant="h5" color="inherit" paragraph>
+            <Typography variant='h5' color='inherit' paragraph>
               {post.description}
             </Typography>
-            {/* <Link variant="subtitle1" href="#">
-              {post.linkText}
-            </Link> */}
           </Box>
         </Grid>
       </Grid>
