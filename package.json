@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^13.2.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-router-dom": "^6.23.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.0",
     "@mui/material": "^5.15.16",
@@ -16,8 +17,9 @@
     "@mui/lab": "^5.0.0-alpha.170",
     "@mui/styled-engine":"^5.15.14",
     "markdown-to-jsx": "^7.4.7",
-    "@emotion/react": "latest",
-    "@emotion/styled": "latest"
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "axios": "^1.6.8"
   },
   "scripts": {
     "start": "react-scripts start",
