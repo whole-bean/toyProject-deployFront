@@ -7,9 +7,24 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CloudUpload from '@mui/icons-material/CloudUpload';
+import axios from 'axios';
 
 function FeaturedPost(props) {
-  const { post } = props;
+  const { post, isDeploying, handleDeploy } = props;
+
+  /**
+   * 배포 버튼 클릭 핸들러
+   * @param {*} e
+   */
+  const handleClickDeploy = async (e) => {
+    try {
+      handleDeploy();
+
+      // const response = await axios.get('', {
+      //   params: {},
+      // });
+    } catch {}
+  };
 
   return (
     <Grid item xs={12} md={6}>
@@ -20,14 +35,29 @@ function FeaturedPost(props) {
           </Typography>
           <Typography variant='subtitle1' color='primary'>
             <LoadingButton
+              spacing={4}
               loading={!post.deployStatus}
+              disabled={isDeploying}
               loadingPosition='start'
               startIcon={<CloudUpload />}
               variant='contained'
               component='a'
               href='#'
+              onClick={handleClickDeploy}
             >
-              {post.deployStatus ? '배포' : '배포중'}
+              {post.frontDeployStatus ? 'Front 배포' : 'Front 배포중'}
+            </LoadingButton>
+            <LoadingButton
+              loading={!post.deployStatus}
+              disabled={isDeploying}
+              loadingPosition='start'
+              startIcon={<CloudUpload />}
+              variant='contained'
+              component='a'
+              href='#'
+              onClick={handleClickDeploy}
+            >
+              {post.backDeployStatus ? 'Back 배포' : 'Back 배포중'}
             </LoadingButton>
           </Typography>
         </CardContent>
@@ -41,6 +71,8 @@ function FeaturedPost(props) {
     </Grid>
   );
 }
+
+const afterLoading = () => {};
 
 FeaturedPost.propTypes = {
   post: PropTypes.shape({
