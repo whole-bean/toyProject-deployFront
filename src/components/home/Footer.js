@@ -8,7 +8,7 @@ import Link from '@mui/material/Link';
 function Copyright() {
   return (
     <Typography variant='body2' color='text.secondary' align='center'>
-      {'Copyright © '}
+      {'Copyright © ['}
       <Link
         color='inherit'
         underline='none'
@@ -17,7 +17,16 @@ function Copyright() {
         rel='noopener'
       >
         최예준
-      </Link>{' '}
+      </Link>{' | '}
+      <Link
+        color='inherit'
+        underline='none'
+        href='https://github.com/HyojeongRyu'
+        target='_blank'
+        rel='noopener'
+      >
+        류효정
+      </Link>{'] '}
       {new Date().getFullYear()}
       {'.'}
     </Typography>
@@ -27,7 +36,7 @@ function Copyright() {
 function Footer() {
 
   return (
-    <Box component='footer' sx={{ bgcolor: 'background.paper', pt: 7, height: 120}}>
+    <Box component='footer' sx={{ bgcolor: 'background.paper', pt: 3, pb: 1}}>
       <Container maxWidth='lg'>
         <Copyright />
       </Container>

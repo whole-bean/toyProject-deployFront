@@ -34,7 +34,7 @@ function MainFeaturedPost(props) {
         }}
       />
       <Grid container justifyContent>
-        <Grid item md={6}>
+        <Grid item xs={12} md={12} lg={6}>
           <Box
             sx={{
               position: 'relative',

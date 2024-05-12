@@ -24,24 +24,24 @@ export default function FeaturedPost(props: FeaturedPostProps) {
     <Grid item xs={12} md={6}>
       <Card sx={{ display: 'flex', height: 100, backgroundColor: 'grey.50' }}>
         <CardContent sx={{ flex: 1 }}>
-          <Typography component="h1" variant="h5">
+          <Typography component='h1' variant='h5'>
             {post.title}
           </Typography>
-          <Typography variant="subtitle1" color="primary">
+          <Typography variant='subtitle1' color='primary'>
             <LoadingButton
               loading={!post.deployStatus}
-              loadingPosition="start"
+              loadingPosition='start'
               startIcon={<CloudUpload />}
-              variant="contained"
-              component="a"
-              href="#"
+              variant='contained'
+              component='a'
+              href='#'
             >
               {post.deployStatus ? '배포' : '배포중'}
             </LoadingButton>
           </Typography>
         </CardContent>
         <CardMedia
-          component="img"
+          component='img'
           sx={{ width: 100, display: { xs: 'none', sm: 'block' } }}
           image={post.image}
           alt={post.imageLabel}
