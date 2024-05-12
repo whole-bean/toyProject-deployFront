@@ -16,10 +16,9 @@ function FeaturedPost(props) {
    * 배포 버튼 클릭 핸들러
    * @param {*} e
    */
-  const handleClickDeploy = async (e) => {
+  const handleClickDeploy = async (serverType) => {
     try {
-      handleDeploy();
-
+      handleDeploy(serverType);
       // const response = await axios.get('', {
       //   params: {},
       // });
@@ -36,26 +35,30 @@ function FeaturedPost(props) {
           <Typography variant='subtitle1' color='primary'>
             <LoadingButton
               spacing={4}
-              loading={!post.deployStatus}
+              loading={post.frontDeployStatus}
               disabled={isDeploying}
               loadingPosition='start'
               startIcon={<CloudUpload />}
               variant='contained'
               component='a'
               href='#'
-              onClick={handleClickDeploy}
+              onClick={() => {
+                handleClickDeploy('front');
+              }}
             >
               {post.frontDeployStatus ? 'Front 배포' : 'Front 배포중'}
             </LoadingButton>
             <LoadingButton
-              loading={!post.deployStatus}
+              loading={post.backDeployStatus}
               disabled={isDeploying}
               loadingPosition='start'
               startIcon={<CloudUpload />}
               variant='contained'
               component='a'
               href='#'
-              onClick={handleClickDeploy}
+              onClick={() => {
+                handleClickDeploy('back');
+              }}
             >
               {post.backDeployStatus ? 'Back 배포' : 'Back 배포중'}
             </LoadingButton>
@@ -76,12 +79,14 @@ const afterLoading = () => {};
 
 FeaturedPost.propTypes = {
   post: PropTypes.shape({
-    deployStatus: PropTypes.bool.isRequired,
+    frontDeployStatus: PropTypes.bool.isRequired,
+    backDeployStatus: PropTypes.bool.isRequired,
     description: PropTypes.string.isRequired,
     image: PropTypes.string.isRequired,
     imageLabel: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
   }).isRequired,
+  isDeploying: PropTypes.bool.isRequired
 };
 
 export default FeaturedPost;
