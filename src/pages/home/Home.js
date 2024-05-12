@@ -6,6 +6,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import MainFeaturedPost from '../../components/home/MainFeaturedPost';
 import FeaturedPost from '../../components/home/FeaturedPost';
 import Footer from '../../components/home/Footer';
+import axios from 'axios';
 
 const randomTmi = [
   <>
@@ -54,49 +55,124 @@ const mainFeaturedPost = {
   linkText: 'Continue reading…',
 };
 
-const modules = [
-  {
-    title: 'Logis',
-    frontDeployStatus: false,
-    backDeployStatus: false,
-    description: 'This is a wider card with supporting text below as a natural lead-in to additional content.',
-    image: 'https://source.unsplash.com/random/?wallpapers',
-    imageLabel: 'Image Text',
-  },
-  {
-    title: 'Purchase',
-    frontDeployStatus: false,
-    backDeployStatus: false,
-    description: 'This is a wider card with supporting text below as a natural lead-in to additional content.',
-    image: 'https://source.unsplash.com/random/?wallpapers',
-    imageLabel: 'Image Text',
-  },
-  {
-    title: 'Production',
-    frontDeployStatus: false,
-    backDeployStatus: false,
-    description: 'This is a wider card with supporting text below as a natural lead-in to additional content.',
-    image: 'https://source.unsplash.com/random/?wallpapers',
-    imageLabel: 'Image Text',
-  },
-];
 const defaultTheme = createTheme({
   typography: {
-    fontFamily: "'Noto Sans KR', sans-serif",
+    fontFamily: '"Noto Sans KR", sans-serif',
   },
 });
 
 export default function Home() {
-  const [isDeploying, setIsDeploying] = useState(false);
-  const [moduleInfo, setModuleInfo] = useState(modules);
+  const [moduleInfos, setModuleInfos] = useState([
+    {
+      key: 0,
+      title: 'Logis',
+      frontendBuildStatus: false,
+      frontendDeployStatus: false,
+      backendBuildStatus: false,
+      backendDeployStatus: false,
+      description: 'logis',
+      image: 'https://source.unsplash.com/random/?wallpapers',
+      imageLabel: 'logis',
+    },
+    {
+      key: 1,
+      title: 'Purchase',
+      frontendBuildStatus: false,
+      frontendDeployStatus: false,
+      backendBuildStatus: false,
+      backendDeployStatus: false,
+      description: 'purchase',
+      image: 'https://source.unsplash.com/random/?wallpapers',
+      imageLabel: 'purchase',
+    },
+    {
+      key: 2,
+      title: 'Production',
+      frontendBuildStatus: false,
+      frontendDeployStatus: false,
+      backendBuildStatus: false,
+      backendDeployStatus: false,
+      description: 'production',
+      image: 'https://source.unsplash.com/random/?wallpapers',
+      imageLabel: 'production',
+    },
+    {
+      key: 3,
+      title: 'LogisCustom',
+      frontendBuildStatus: false,
+      frontendDeployStatus: false,
+      backendBuildStatus: false,
+      backendDeployStatus: false,
+      description:
+        'logiscustom',
+      image: 'https://source.unsplash.com/random/?wallpapers',
+      imageLabel: 'logiscustom',
+    }
+  ]);
+  const [apiList, setApiList] = useState({
+    commonParam: (module, target) => { return {module, target}; },
+    build: { api: `${process.env.REACT_APP_MY_DEPLOY_SERVER_URL}/build` },
+    depoly: { api: `${process.env.REACT_APP_MY_DEPLOY_SERVER_URL}/deploy` },
+  });
 
-  const handleDeploy = (index, serverType) => {
-    setIsDeploying(!isDeploying);
+  const handleDeploy = async (e) => {
+    try {
+      const { key, module, target } = e;
+      console.log(e);
+      if(module === 'logiscustom') {
+        alert('logisCustom은 아직 개발 중입니다..! (>_<) ');
+        return;
+      }
+      setBuildStatus({moduleInfos, key, target}, true);
+      const buildResponse = await axios.post(apiList.build.api, apiList.commonParam(module, target));
+      console.log(buildResponse);
+      if(buildResponse?.status === 200 && buildResponse?.data.state === 0){
+        setBuildStatus({moduleInfos, key, target}, false);
+        setDeployStatus({moduleInfos, key, target}, true);
+        const deployResponse = await axios.post(apiList.depoly.api, apiList.commonParam(module, target));
+        console.log(deployResponse);
+        if(deployResponse?.status === 200 /* 조건 추가 예정  */){
+          setDeployStatus({moduleInfos, key, target}, false);
+        }
+      }
+      
+      // setIsDeploying(!isDeploying);
+  
+      // const copy = [...moduleInfo];
+      // copy[index][`${serverType}DeployStatus`] = !moduleInfo[index][`${serverType}DeployStatus`];
+      // setModuleInfo(copy);
+    } catch (error) {
+      const { key, target } = e;
+      // <Alert severity='error'>
+      //   {error?.response?.data?.error}
+      // </Alert>
 
-    const copy = [...moduleInfo];
-    copy[index][`${serverType}DeployStatus`] = !moduleInfo[index][`${serverType}DeployStatus`];
-    setModuleInfo(copy);
+      // setDeployStatus({
+      //   ...deployStatus,
+      //   error
+      // });
+
+      // console.log(error?.response?.data?.error);
+      console.log(error?.response);
+      console.debug(error?.response);
+
+      
+      setBuildStatus({moduleInfos, key, target}, false);
+      setDeployStatus({moduleInfos, key, target}, false);
+    }
   };
+
+  const setBuildStatus = ({moduleInfos, key, target}, value) => {
+    const moduleInfos_ = [...moduleInfos];
+    moduleInfos_[key][`${target}BuildStatus`] = value;
+    setModuleInfos(moduleInfos_);
+  }
+  
+  const setDeployStatus = ({moduleInfos, key, target}, value) => {
+    const moduleInfos_ = [...moduleInfos];
+    moduleInfos_[key][`${target}DeployStatus`] = value;
+    setModuleInfos(moduleInfos_);
+  }
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -104,17 +180,11 @@ export default function Home() {
       <Container maxWidth='lg'>
         <main>
           <MainFeaturedPost post={mainFeaturedPost} />
-          <Grid container spacing={4} pt={5} pb={7}>
-            {moduleInfo.map((post, index) => (
-              <FeaturedPost
-                key={index}
-                post={post}
-                isDeploying={isDeploying}
-                handleDeploy={(serverType) => {
-                  handleDeploy(index, serverType);
-                }}
-              />
-            ))}
+          <Grid container spacing={4} pt={2} pb={2}>
+            {moduleInfos.map((moduleInfo) => {
+                return <FeaturedPost moduleInfo={moduleInfo} handleDeploy={handleDeploy} />;
+              })
+            }
           </Grid>
         </main>
       </Container>
