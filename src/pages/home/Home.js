@@ -6,7 +6,11 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import MainFeaturedPost from '../../components/home/MainFeaturedPost';
 import FeaturedPost from '../../components/home/FeaturedPost';
 import Footer from '../../components/home/Footer';
+import Message from '../../Message';
+import io from 'socket.io-client';
 import axios from 'axios';
+
+const socket = io.connect(process.env.REACT_APP_MY_DEPLOY_SERVER_URL);
 
 const randomTmi = [
   <>
@@ -103,76 +107,86 @@ export default function Home() {
       frontendDeployStatus: false,
       backendBuildStatus: false,
       backendDeployStatus: false,
-      description:
-        'logiscustom',
+      description: 'logiscustom',
       image: 'https://source.unsplash.com/random/?wallpapers',
       imageLabel: 'logiscustom',
-    }
+    },
   ]);
   const [apiList, setApiList] = useState({
-    commonParam: (module, target) => { return {module, target}; },
-    build: { api: `${process.env.REACT_APP_MY_DEPLOY_SERVER_URL}/build` },
-    depoly: { api: `${process.env.REACT_APP_MY_DEPLOY_SERVER_URL}/deploy` },
+    commonParam: (module, target) => {
+      return { module, target };
+    },
+    // build: { api: `${process.env.REACT_APP_MY_DEPLOY_SERVER_URL}/build` },
+    // depoly: { api: `${process.env.REACT_APP_MY_DEPLOY_SERVER_URL}/deploy` },
   });
+
+  useEffect(() => {
+    socket.on('build', (buildResponse) => {
+      if (buildResponse?.data.state === 0) {
+        // setBuildStatus({ moduleInfos, key, target }, false);
+        // setDeployStatus({ moduleInfos, key, target }, true);
+        // socket.emit('deploy', apiList.commonParam(module, target));
+      }
+    });
+    socket.on('deploy', (deployResponse) => {
+      console.log(deployResponse);
+      // setDeployStatus({ moduleInfos, key, target }, false);
+    });
+    socket.on('error', (errorType) => {
+      // let msg = Message.deployFail;
+      // switch (errorType) {
+      //   case 'build':
+      //     msg = Message.buildFail;
+      //     setBuildStatus({ moduleInfos, key, target }, false);
+      //   default:
+      //     msg = Message.deployFail;
+      //     setDeployStatus({ moduleInfos, key, target }, false);
+      // }
+      // console.log(error?.response);
+      // console.debug(error?.response);
+      // alert(msg);
+    });
+  }, []);
 
   const handleDeploy = async (e) => {
     try {
       const { key, module, target } = e;
       console.log(e);
-      if(module === 'logiscustom') {
+      if (module === 'logiscustom') {
         alert('logisCustom은 아직 개발 중입니다..! (>_<) ');
         return;
       }
-      setBuildStatus({moduleInfos, key, target}, true);
-      const buildResponse = await axios.post(apiList.build.api, apiList.commonParam(module, target));
-      console.log(buildResponse);
-      if(buildResponse?.status === 200 && buildResponse?.data.state === 0){
-        setBuildStatus({moduleInfos, key, target}, false);
-        setDeployStatus({moduleInfos, key, target}, true);
-        const deployResponse = await axios.post(apiList.depoly.api, apiList.commonParam(module, target));
-        console.log(deployResponse);
-        if(deployResponse?.status === 200 /* 조건 추가 예정  */){
-          setDeployStatus({moduleInfos, key, target}, false);
-        }
-      }
-      
+      setBuildStatus({ moduleInfos, key, target }, true);
+      socket.emit('build', apiList.commonParam(module, target));
+
       // setIsDeploying(!isDeploying);
-  
+
       // const copy = [...moduleInfo];
       // copy[index][`${serverType}DeployStatus`] = !moduleInfo[index][`${serverType}DeployStatus`];
       // setModuleInfo(copy);
     } catch (error) {
-      const { key, target } = e;
       // <Alert severity='error'>
       //   {error?.response?.data?.error}
       // </Alert>
-
       // setDeployStatus({
       //   ...deployStatus,
       //   error
       // });
-
       // console.log(error?.response?.data?.error);
-      console.log(error?.response);
-      console.debug(error?.response);
-
-      
-      setBuildStatus({moduleInfos, key, target}, false);
-      setDeployStatus({moduleInfos, key, target}, false);
     }
   };
 
-  const setBuildStatus = ({moduleInfos, key, target}, value) => {
+  const setBuildStatus = ({ moduleInfos, key, target }, value) => {
     const moduleInfos_ = [...moduleInfos];
     moduleInfos_[key][`${target}BuildStatus`] = value;
     setModuleInfos(moduleInfos_);
-  }
-  
-  const setDeployStatus = ({moduleInfos, key, target}, value) => {
+  };
+
+  const setDeployStatus = ({ moduleInfos, key, target }, value) => {
     const moduleInfos_ = [...moduleInfos];
     moduleInfos_[key][`${target}DeployStatus`] = value;
     setModuleInfos(moduleInfos_);
-  }
+  };
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -182,9 +196,8 @@ export default function Home() {
           <MainFeaturedPost post={mainFeaturedPost} />
           <Grid container spacing={4} pt={2} pb={2}>
             {moduleInfos.map((moduleInfo) => {
-                return <FeaturedPost moduleInfo={moduleInfo} handleDeploy={handleDeploy} />;
-              })
-            }
+              return <FeaturedPost moduleInfo={moduleInfo} handleDeploy={handleDeploy} />;
+            })}
           </Grid>
         </main>
       </Container>
